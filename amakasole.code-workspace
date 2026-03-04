@@ -1,0 +1,52 @@
+{
+  "folders": [
+    { "name": "Mobile App", "path": "apps/mobile" },
+    { "name": "Web Dashboard", "path": "apps/web-dashboard" },
+    { "name": "API", "path": "packages/api" },
+    { "name": "ML Service", "path": "packages/ml-service" },
+    { "name": "Database", "path": "packages/db" },
+    { "name": "Shared Types", "path": "packages/shared" },
+    { "name": "AmakaFit SDK", "path": "packages/amaka-fit-sdk" },
+    { "name": "Root", "path": "." }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2,
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "python.defaultInterpreterPath": "./packages/ml-service/.venv/bin/python",
+    "eslint.workingDirectories": [
+      "apps/mobile",
+      "apps/web-dashboard",
+      "packages/api",
+      "packages/db",
+      "packages/shared",
+      "packages/amaka-fit-sdk"
+    ],
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/.expo": true,
+      "**/__pycache__": true,
+      "**/.venv": true
+    },
+    "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+    "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+    "[python]": { "editor.defaultFormatter": "ms-python.python" }
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "ms-python.python",
+      "ms-python.pylance",
+      "ms-azuretools.vscode-docker",
+      "eamodio.gitlens",
+      "rangav.vscode-thunder-client",
+      "bradlc.vscode-tailwindcss",
+      "msjsdiag.vscode-react-native",
+      "usernamehw.errorlens",
+      "christian-kohler.path-intellisense",
+      "formulahendry.auto-rename-tag"
+    ]
+  }
+}

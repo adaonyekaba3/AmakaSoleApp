@@ -1,0 +1,30 @@
+{
+  "name": "@amakasole/db",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Database schema and client for AmakaSole",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "generate": "drizzle-kit generate:pg",
+    "migrate": "tsx src/migrate.ts",
+    "push": "drizzle-kit push:pg",
+    "studio": "drizzle-kit studio",
+    "seed": "tsx src/seed.ts"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.0",
+    "drizzle-orm": "^0.29.3",
+    "postgres": "^3.4.3",
+    "bcrypt": "^5.1.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/node": "^20.11.0",
+    "drizzle-kit": "^0.20.10",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
