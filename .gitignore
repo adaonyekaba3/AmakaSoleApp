@@ -12,6 +12,7 @@ build/
 dist/
 .expo/
 .expo-shared/
+.next/
 
 # Misc
 .DS_Store
