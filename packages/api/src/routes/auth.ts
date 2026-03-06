@@ -2,7 +2,7 @@ import { Router, Response } from 'express';
 import bcrypt from 'bcrypt';
 import { db, users, userProfiles, refreshTokens } from '@amakasole/db';
 import { eq } from 'drizzle-orm';
-import { registerSchema, loginSchema } from '@amakasole/shared';
+import { registerSchema, loginSchema, appleAuthSchema, googleAuthSchema } from '@amakasole/shared';
 import { validate } from '../middleware/validate';
 import { verifyToken, AuthRequest } from '../middleware/auth';
 import { generateAccessToken, generateRefreshToken } from '../lib/jwt';
@@ -228,6 +228,139 @@ router.get('/me', verifyToken, async (req: AuthRequest, res, next) => {
       data: {
         ...user,
         profile: profile || null,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/auth/social/apple
+router.post('/social/apple', validate(appleAuthSchema), async (req, res, next) => {
+  try {
+    const { identityToken, firstName, lastName } = req.body;
+
+    // Verify Apple identity token
+    let appleUser: any;
+    try {
+      const appleSignin = await import('apple-signin-auth');
+      appleUser = await appleSignin.default.verifyIdToken(identityToken, {
+        audience: process.env.APPLE_CLIENT_ID!,
+      });
+    } catch {
+      res.status(401).json({ success: false, error: 'Invalid Apple identity token' });
+      return;
+    }
+
+    const email = appleUser.email;
+    if (!email) {
+      res.status(400).json({ success: false, error: 'Email not provided by Apple' });
+      return;
+    }
+
+    // Find or create user
+    let [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+
+    if (!user) {
+      [user] = await db.insert(users).values({
+        email,
+        firstName: firstName || 'Apple',
+        lastName: lastName || 'User',
+        authProvider: 'APPLE',
+        role: 'CONSUMER',
+        isEmailVerified: true,
+      }).returning();
+
+      await db.insert(userProfiles).values({ userId: user.id });
+    }
+
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
+
+    await db.delete(refreshTokens).where(eq(refreshTokens.userId, user.id));
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    await db.insert(refreshTokens).values({ token: refreshToken, userId: user.id, expiresAt });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.json({
+      success: true,
+      data: {
+        user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role },
+        accessToken,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/auth/social/google
+router.post('/social/google', validate(googleAuthSchema), async (req, res, next) => {
+  try {
+    const { idToken } = req.body;
+
+    // Verify Google ID token
+    let payload: any;
+    try {
+      const { OAuth2Client } = await import('google-auth-library');
+      const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+      const ticket = await client.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      payload = ticket.getPayload();
+    } catch {
+      res.status(401).json({ success: false, error: 'Invalid Google ID token' });
+      return;
+    }
+
+    const email = payload?.email;
+    if (!email) {
+      res.status(400).json({ success: false, error: 'Email not provided by Google' });
+      return;
+    }
+
+    // Find or create user
+    let [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+
+    if (!user) {
+      [user] = await db.insert(users).values({
+        email,
+        firstName: payload.given_name || 'Google',
+        lastName: payload.family_name || 'User',
+        authProvider: 'GOOGLE',
+        role: 'CONSUMER',
+        isEmailVerified: true,
+      }).returning();
+
+      await db.insert(userProfiles).values({ userId: user.id });
+    }
+
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
+
+    await db.delete(refreshTokens).where(eq(refreshTokens.userId, user.id));
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    await db.insert(refreshTokens).values({ token: refreshToken, userId: user.id, expiresAt });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.json({
+      success: true,
+      data: {
+        user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role },
+        accessToken,
       },
     });
   } catch (error) {

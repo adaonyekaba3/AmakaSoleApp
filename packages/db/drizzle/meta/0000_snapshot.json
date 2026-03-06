@@ -1,0 +1,1026 @@
+{
+  "id": "2e9348c0-1c9b-43b6-92e8-f3f4d470f42c",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "brand_partner_orders": {
+      "name": "brand_partner_orders",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "brand_partner_id": {
+          "name": "brand_partner_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "external_order_ref": {
+          "name": "external_order_ref",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "brand_partner_orders_brand_partner_id_brand_partners_id_fk": {
+          "name": "brand_partner_orders_brand_partner_id_brand_partners_id_fk",
+          "tableFrom": "brand_partner_orders",
+          "tableTo": "brand_partners",
+          "columnsFrom": [
+            "brand_partner_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "brand_partner_orders_order_id_orders_id_fk": {
+          "name": "brand_partner_orders_order_id_orders_id_fk",
+          "tableFrom": "brand_partner_orders",
+          "tableTo": "orders",
+          "columnsFrom": [
+            "order_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "brand_partner_orders_order_id_unique": {
+          "name": "brand_partner_orders_order_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "order_id"
+          ]
+        }
+      }
+    },
+    "brand_partners": {
+      "name": "brand_partners",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "api_key_hash": {
+          "name": "api_key_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "webhook_url": {
+          "name": "webhook_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "logo_url": {
+          "name": "logo_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "theme_config": {
+          "name": "theme_config",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'"
+        },
+        "revenue_share_percent": {
+          "name": "revenue_share_percent",
+          "type": "numeric(5, 2)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'10'"
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "brand_partners_api_key_hash_unique": {
+          "name": "brand_partners_api_key_hash_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "api_key_hash"
+          ]
+        }
+      }
+    },
+    "refresh_tokens": {
+      "name": "refresh_tokens",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "token": {
+          "name": "token",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "refresh_tokens_user_id_users_id_fk": {
+          "name": "refresh_tokens_user_id_users_id_fk",
+          "tableFrom": "refresh_tokens",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "refresh_tokens_token_unique": {
+          "name": "refresh_tokens_token_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "token"
+          ]
+        }
+      }
+    },
+    "user_profiles": {
+      "name": "user_profiles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date_of_birth": {
+          "name": "date_of_birth",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "weight_kg": {
+          "name": "weight_kg",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "height_cm": {
+          "name": "height_cm",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "primary_activity": {
+          "name": "primary_activity",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "known_conditions": {
+          "name": "known_conditions",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "shoe_collection": {
+          "name": "shoe_collection",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'"
+        },
+        "foot_health_score": {
+          "name": "foot_health_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_profiles_user_id_users_id_fk": {
+          "name": "user_profiles_user_id_users_id_fk",
+          "tableFrom": "user_profiles",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_profiles_user_id_unique": {
+          "name": "user_profiles_user_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id"
+          ]
+        }
+      }
+    },
+    "users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "first_name": {
+          "name": "first_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "auth_provider": {
+          "name": "auth_provider",
+          "type": "auth_provider",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'EMAIL'"
+        },
+        "role": {
+          "name": "role",
+          "type": "user_role",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'CONSUMER'"
+        },
+        "is_email_verified": {
+          "name": "is_email_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
+    },
+    "foot_scans": {
+      "name": "foot_scans",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scan_date": {
+          "name": "scan_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "left_foot_key": {
+          "name": "left_foot_key",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "right_foot_key": {
+          "name": "right_foot_key",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "scan_status",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "point_cloud_url": {
+          "name": "point_cloud_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mesh_url": {
+          "name": "mesh_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "measurements": {
+          "name": "measurements",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scan_metadata": {
+          "name": "scan_metadata",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "foot_scans_user_id_users_id_fk": {
+          "name": "foot_scans_user_id_users_id_fk",
+          "tableFrom": "foot_scans",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "gait_analyses": {
+      "name": "gait_analyses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "foot_scan_id": {
+          "name": "foot_scan_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "video_key": {
+          "name": "video_key",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pronation_type": {
+          "name": "pronation_type",
+          "type": "pronation_type",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'UNKNOWN'"
+        },
+        "confidence_score": {
+          "name": "confidence_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "heatmap_url": {
+          "name": "heatmap_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "analysis_data": {
+          "name": "analysis_data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "analyzed_at": {
+          "name": "analyzed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "gait_analyses_foot_scan_id_foot_scans_id_fk": {
+          "name": "gait_analyses_foot_scan_id_foot_scans_id_fk",
+          "tableFrom": "gait_analyses",
+          "tableTo": "foot_scans",
+          "columnsFrom": [
+            "foot_scan_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "gait_analyses_foot_scan_id_unique": {
+          "name": "gait_analyses_foot_scan_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "foot_scan_id"
+          ]
+        }
+      }
+    },
+    "orthotic_designs": {
+      "name": "orthotic_designs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "foot_scan_id": {
+          "name": "foot_scan_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "shoe_type": {
+          "name": "shoe_type",
+          "type": "shoe_type",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "use_case": {
+          "name": "use_case",
+          "type": "use_case",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "material": {
+          "name": "material",
+          "type": "material_type",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "arch_height_pref": {
+          "name": "arch_height_pref",
+          "type": "arch_height_pref",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'MEDIUM'"
+        },
+        "cad_spec_url": {
+          "name": "cad_spec_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cad_spec": {
+          "name": "cad_spec",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "preview_image_url": {
+          "name": "preview_image_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "design_status",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'DRAFT'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "orthotic_designs_foot_scan_id_foot_scans_id_fk": {
+          "name": "orthotic_designs_foot_scan_id_foot_scans_id_fk",
+          "tableFrom": "orthotic_designs",
+          "tableTo": "foot_scans",
+          "columnsFrom": [
+            "foot_scan_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "orders": {
+      "name": "orders",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "orthotic_design_id": {
+          "name": "orthotic_design_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "brand_partner_id": {
+          "name": "brand_partner_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stripe_payment_intent_id": {
+          "name": "stripe_payment_intent_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stripe_session_id": {
+          "name": "stripe_session_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currency": {
+          "name": "currency",
+          "type": "varchar(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'usd'"
+        },
+        "status": {
+          "name": "status",
+          "type": "order_status",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "tracking_number": {
+          "name": "tracking_number",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tracking_carrier": {
+          "name": "tracking_carrier",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "shipping_address": {
+          "name": "shipping_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subscription_id": {
+          "name": "subscription_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "orders_user_id_users_id_fk": {
+          "name": "orders_user_id_users_id_fk",
+          "tableFrom": "orders",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "orders_orthotic_design_id_orthotic_designs_id_fk": {
+          "name": "orders_orthotic_design_id_orthotic_designs_id_fk",
+          "tableFrom": "orders",
+          "tableTo": "orthotic_designs",
+          "columnsFrom": [
+            "orthotic_design_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "orders_brand_partner_id_brand_partners_id_fk": {
+          "name": "orders_brand_partner_id_brand_partners_id_fk",
+          "tableFrom": "orders",
+          "tableTo": "brand_partners",
+          "columnsFrom": [
+            "brand_partner_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "orders_orthotic_design_id_unique": {
+          "name": "orders_orthotic_design_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "orthotic_design_id"
+          ]
+        }
+      }
+    },
+    "subscriptions": {
+      "name": "subscriptions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stripe_subscription_id": {
+          "name": "stripe_subscription_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "subscription_status",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'ACTIVE'"
+        },
+        "plan": {
+          "name": "plan",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PREMIUM'"
+        },
+        "current_period_start": {
+          "name": "current_period_start",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "current_period_end": {
+          "name": "current_period_end",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "subscriptions_user_id_users_id_fk": {
+          "name": "subscriptions_user_id_users_id_fk",
+          "tableFrom": "subscriptions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "subscriptions_user_id_unique": {
+          "name": "subscriptions_user_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id"
+          ]
+        },
+        "subscriptions_stripe_subscription_id_unique": {
+          "name": "subscriptions_stripe_subscription_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "stripe_subscription_id"
+          ]
+        }
+      }
+    }
+  },
+  "enums": {
+    "auth_provider": {
+      "name": "auth_provider",
+      "values": {
+        "EMAIL": "EMAIL",
+        "APPLE": "APPLE",
+        "GOOGLE": "GOOGLE"
+      }
+    },
+    "user_role": {
+      "name": "user_role",
+      "values": {
+        "CONSUMER": "CONSUMER",
+        "BRAND_PARTNER": "BRAND_PARTNER",
+        "ADMIN": "ADMIN"
+      }
+    },
+    "pronation_type": {
+      "name": "pronation_type",
+      "values": {
+        "NEUTRAL": "NEUTRAL",
+        "OVERPRONATION": "OVERPRONATION",
+        "SUPINATION": "SUPINATION",
+        "UNKNOWN": "UNKNOWN"
+      }
+    },
+    "scan_status": {
+      "name": "scan_status",
+      "values": {
+        "PENDING": "PENDING",
+        "UPLOADING": "UPLOADING",
+        "PROCESSING": "PROCESSING",
+        "ANALYZING": "ANALYZING",
+        "COMPLETE": "COMPLETE",
+        "FAILED": "FAILED"
+      }
+    },
+    "arch_height_pref": {
+      "name": "arch_height_pref",
+      "values": {
+        "LOW": "LOW",
+        "MEDIUM": "MEDIUM",
+        "HIGH": "HIGH"
+      }
+    },
+    "design_status": {
+      "name": "design_status",
+      "values": {
+        "DRAFT": "DRAFT",
+        "CONFIRMED": "CONFIRMED",
+        "ORDERED": "ORDERED"
+      }
+    },
+    "material_type": {
+      "name": "material_type",
+      "values": {
+        "EVA_FOAM": "EVA_FOAM",
+        "MEMORY_FOAM": "MEMORY_FOAM",
+        "CARBON_FIBER": "CARBON_FIBER",
+        "PREMIUM": "PREMIUM"
+      }
+    },
+    "shoe_type": {
+      "name": "shoe_type",
+      "values": {
+        "HEEL": "HEEL",
+        "SNEAKER": "SNEAKER",
+        "BOOT": "BOOT",
+        "LOAFER": "LOAFER",
+        "SANDAL": "SANDAL",
+        "SPORT": "SPORT"
+      }
+    },
+    "use_case": {
+      "name": "use_case",
+      "values": {
+        "EVERYDAY": "EVERYDAY",
+        "SPORT": "SPORT",
+        "MEDICAL": "MEDICAL"
+      }
+    },
+    "order_status": {
+      "name": "order_status",
+      "values": {
+        "PENDING": "PENDING",
+        "PAID": "PAID",
+        "MANUFACTURING": "MANUFACTURING",
+        "SHIPPED": "SHIPPED",
+        "DELIVERED": "DELIVERED",
+        "CANCELLED": "CANCELLED"
+      }
+    },
+    "subscription_status": {
+      "name": "subscription_status",
+      "values": {
+        "ACTIVE": "ACTIVE",
+        "CANCELLED": "CANCELLED",
+        "PAST_DUE": "PAST_DUE",
+        "TRIALING": "TRIALING"
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

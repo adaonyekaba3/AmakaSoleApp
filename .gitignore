@@ -53,6 +53,9 @@ infra/**/*.tfstate.*
 infra/**/*.tfvars
 !infra/**/*.tfvars.example
 
+# TypeScript build info
+*.tsbuildinfo
+
 # Temp
 *.tmp
 .temp/

@@ -1,7 +1,6 @@
 import { db } from './client';
 import * as schema from './schema';
 import * as bcrypt from 'bcrypt';
-import { eq } from 'drizzle-orm';
 
 async function seed(): Promise<void> {
   console.log('🌱 Seeding database...');
@@ -57,7 +56,7 @@ async function seed(): Promise<void> {
     })
     .returning();
 
-  const [brandUser] = await db
+  const [_brandUser] = await db
     .insert(schema.users)
     .values({
       email: 'brand@luxebrand.com',
@@ -70,7 +69,7 @@ async function seed(): Promise<void> {
     })
     .returning();
 
-  const [admin] = await db
+  const [_admin] = await db
     .insert(schema.users)
     .values({
       email: 'admin@amakasole.com',
@@ -85,7 +84,7 @@ async function seed(): Promise<void> {
 
   // Create Consumer Profile
   console.log('Creating user profiles...');
-  const [consumerProfile] = await db
+  const [_consumerProfile] = await db
     .insert(schema.userProfiles)
     .values({
       userId: consumer.id,
@@ -197,7 +196,7 @@ async function seed(): Promise<void> {
   // Create Gait Analyses
   console.log('Creating gait analyses...');
 
-  const [gait1] = await db
+  const [_gait1] = await db
     .insert(schema.gaitAnalyses)
     .values({
       footScanId: scan1.id,
@@ -221,7 +220,7 @@ async function seed(): Promise<void> {
     })
     .returning();
 
-  const [gait2] = await db
+  const [_gait2] = await db
     .insert(schema.gaitAnalyses)
     .values({
       footScanId: scan2.id,
@@ -272,7 +271,7 @@ async function seed(): Promise<void> {
     })
     .returning();
 
-  const [design2] = await db
+  const [_design2] = await db
     .insert(schema.orthoticDesigns)
     .values({
       footScanId: scan2.id,
@@ -322,7 +321,7 @@ async function seed(): Promise<void> {
 
   // Create Subscription
   console.log('Creating subscription...');
-  const [subscription] = await db
+  const [_subscription] = await db
     .insert(schema.subscriptions)
     .values({
       userId: consumer.id,
@@ -337,7 +336,7 @@ async function seed(): Promise<void> {
   // Create Orders
   console.log('Creating orders...');
 
-  const [order1] = await db
+  const [_order1] = await db
     .insert(schema.orders)
     .values({
       userId: consumer.id,

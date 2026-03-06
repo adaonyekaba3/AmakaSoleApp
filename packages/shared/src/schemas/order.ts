@@ -15,10 +15,5 @@ export const createPaymentIntentSchema = z.object({
   shippingAddress: shippingAddressSchema,
 });
 
-export const createSubscriptionSchema = z.object({
-  paymentMethodId: z.string().min(1, 'Payment method ID is required'),
-});
-
 export type CreatePaymentIntentInput = z.infer<typeof createPaymentIntentSchema>;
-export type CreateSubscriptionInput = z.infer<typeof createSubscriptionSchema>;
 export type ShippingAddressInput = z.infer<typeof shippingAddressSchema>;

@@ -1,0 +1,62 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run type-check --workspace=@amakasole/shared
+      - run: npm run type-check --workspace=@amakasole/db
+      - run: npm run type-check --workspace=@amakasole/api
+
+  deploy-api:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Deploy API
+        run: doctl apps create-deployment ${{ secrets.DO_APP_ID_API_PROD }}
+
+  deploy-ml:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Deploy ML Service
+        run: doctl apps create-deployment ${{ secrets.DO_APP_ID_ML_PROD }}
+
+  deploy-dashboard:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: cd apps/web-dashboard && npm ci && npm run build
+      - name: Deploy Dashboard
+        run: echo "Deploy to Vercel or DO App Platform"

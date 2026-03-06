@@ -29,16 +29,7 @@ export const googleAuthSchema = z.object({
   idToken: z.string().min(1, 'ID token is required'),
 });
 
-export const updateProfileSchema = z.object({
-  dateOfBirth: z.string().datetime().optional(),
-  weightKg: z.number().min(20).max(300).optional(),
-  heightCm: z.number().min(50).max(250).optional(),
-  primaryActivity: z.array(z.string()).optional(),
-  knownConditions: z.array(z.string()).optional(),
-});
-
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type AppleAuthInput = z.infer<typeof appleAuthSchema>;
 export type GoogleAuthInput = z.infer<typeof googleAuthSchema>;
-export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

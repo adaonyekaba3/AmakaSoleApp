@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+dotenv.config({ path: '../../.env' });
+
 import { drizzle } from 'drizzle-orm/neon-http';
 import { migrate } from 'drizzle-orm/neon-http/migrator';
 import { neon } from '@neondatabase/serverless';
@@ -10,7 +14,7 @@ const runMigrations = async (): Promise<void> => {
   console.log('🚀 Running migrations...');
 
   const sql = neon(process.env.DATABASE_URL);
-  const db = drizzle(sql);
+  const db = drizzle(sql as any);
 
   await migrate(db, { migrationsFolder: './drizzle' });
 

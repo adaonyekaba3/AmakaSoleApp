@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: amakasole
+      POSTGRES_USER: amakasole
+      POSTGRES_PASSWORD: amakasole_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U amakasole"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ../
+      dockerfile: packages/api/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://amakasole:amakasole_dev@postgres:5432/amakasole
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: dev-jwt-secret-change-in-production
+      NODE_ENV: development
+      PORT: 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  ml-service:
+    build:
+      context: ../packages/ml-service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      REDIS_URL: redis://redis:6379
+      PORT: 8000
+
+volumes:
+  pgdata:
+  redisdata:
