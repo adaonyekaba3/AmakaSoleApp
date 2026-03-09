@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #EEF2FF;
+  --color-primary-100: #E0E7FF;
+  --color-primary-200: #C7D2FE;
+  --color-primary-300: #A5B4FC;
+  --color-primary-400: #818CF8;
+  --color-primary-500: #6366F1;
+  --color-primary-600: #4F46E5;
+  --color-primary-700: #4338CA;
+  --color-primary-800: #3730A3;
+  --color-primary-900: #312E81;
+  --color-accent: #E94560;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-dark-bg: #1A1A2E;
+  --color-dark-card: #16213E;
+  --color-dark-surface: #0F3460;
+  --font-sans: 'Inter', sans-serif;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #111827;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* App shell: centers a phone-sized frame on desktop, fills screen on mobile */
+.app-shell {
+  width: 100%;
+  height: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  background-color: #F9FAFB;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* On desktop, add phone-like framing */
+@media (min-width: 431px) {
+  .app-shell {
+    height: 100vh;
+    border-left: 1px solid #374151;
+    border-right: 1px solid #374151;
+    box-shadow: 0 0 80px rgba(99, 102, 241, 0.15);
+  }
+}
+
+/* iOS safe areas */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Scrollable page content */
+.page-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* Toast animations */
+@keyframes toast-in {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.toast-enter {
+  animation: toast-in 0.3s ease-out;
+}
+
+/* Hide scrollbar but keep scrollable */
+.page-scroll::-webkit-scrollbar {
+  display: none;
+}
+.page-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
